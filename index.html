@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8fc">
+  <title>Pathways — Find a mentor</title>
+  <style>
+    :root {
+      --ink: #20243a;
+      --muted: #697087;
+      --purple: #6558d9;
+      --purple-dark: #5044bd;
+      --lavender: #efedff;
+      --coral: #fa876b;
+      --mint: #d9f2e7;
+      --cream: #fffaf1;
+      --line: #e7e8ef;
+      --surface: #fff;
+      --shadow: 0 16px 44px rgb(32 36 58 / 8%);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f7f8fc;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    body.dialog-open { overflow: hidden; }
+
+    button, input, select, textarea { font: inherit; }
+
+    button, a, input, select, textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a { color: inherit; }
+
+    button:focus-visible, a:focus-visible, input:focus-visible,
+    select:focus-visible, textarea:focus-visible {
+      outline: 3px solid #a59dff;
+      outline-offset: 3px;
+    }
+
+    .top-note {
+      padding: 8px 20px;
+      color: #fff;
+      background: #282345;
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    .top-note strong { color: #ffd8ad; }
+
+    .container {
+      width: min(1160px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      z-index: 5;
+      top: 0;
+      border-bottom: 1px solid rgb(231 232 239 / 80%);
+      background: rgb(255 255 255 / 92%);
+      backdrop-filter: blur(14px);
+    }
+
+    .nav {
+      display: flex;
+      min-height: 72px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 850;
+      letter-spacing: -.04em;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 12px;
+      color: white;
+      background: var(--purple);
+      font-size: 1.1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: .93rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { color: var(--purple); }
+
+    .nav-cta, .primary-button {
+      display: inline-flex;
+      min-height: 43px;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 17px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--purple);
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background .16s ease, transform .16s ease;
+    }
+
+    .nav-cta:hover, .primary-button:hover {
+      transform: translateY(-1px);
+      background: var(--purple-dark);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 74px 0 62px;
+      background:
+        radial-gradient(ellipse at 89% 24%, rgb(255 210 174 / 70%), transparent 25%),
+        radial-gradient(ellipse at 76% 84%, rgb(193 234 216 / 65%), transparent 30%),
+        linear-gradient(115deg, #eeecff, #fffaf2 64%, #f4f7ff);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(240px, .8fr);
+      align-items: center;
+      gap: 50px;
+    }
+
+    .eyebrow {
+      color: var(--purple);
+      font-size: .77rem;
+      font-weight: 850;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    h1, h2, h3, p { overflow-wrap: anywhere; }
+
+    h1 {
+      max-width: 730px;
+      margin: 14px 0 16px;
+      font-size: clamp(2.7rem, 6vw, 5rem);
+      line-height: 1.03;
+      letter-spacing: -.065em;
+    }
+
+    .hero-copy {
+      max-width: 610px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 25px;
+    }
+
+    .quiet-link {
+      padding: 10px 12px;
+      color: var(--ink);
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      min-height: 290px;
+      place-items: center;
+    }
+
+    .orbit {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border: 1px dashed #c7c1f3;
+      border-radius: 50%;
+    }
+
+    .art-card {
+      position: relative;
+      width: min(290px, 100%);
+      padding: 24px;
+      border: 1px solid #ffffff;
+      border-radius: 26px;
+      background: rgb(255 255 255 / 88%);
+      box-shadow: var(--shadow);
+      transform: rotate(2deg);
+    }
+
+    .art-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .art-card strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 1.15rem;
+    }
+
+    .art-people {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-top: 17px;
+    }
+
+    .art-avatars { display: flex; }
+
+    .art-avatars span {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      margin-left: -7px;
+      place-items: center;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: var(--lavender);
+      font-size: 1.1rem;
+    }
+
+    .art-avatars span:first-child { margin-left: 0; }
+    .art-people small { color: var(--muted); }
+
+    .floating-star {
+      position: absolute;
+      top: 20px;
+      right: 3%;
+      color: var(--coral);
+      font-size: 2.2rem;
+    }
+
+    .floating-spark {
+      position: absolute;
+      bottom: 17px;
+      left: 6%;
+      color: var(--purple);
+      font-size: 2rem;
+    }
+
+    .trust-strip {
+      border-bottom: 1px solid var(--line);
+      background: white;
+    }
+
+    .trust-inner {
+      display: flex;
+      min-height: 72px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 12px 32px;
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    .trust-inner strong { color: var(--ink); }
+
+    .section { padding: 70px 0; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 25px;
+    }
+
+    .section-heading h2 {
+      margin: 7px 0 5px;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      letter-spacing: -.05em;
+      line-height: 1.1;
+    }
+
+    .section-heading p {
+      max-width: 640px;
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .need-section { background: white; }
+
+    .need-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .need-card {
+      min-height: 165px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+
+    .need-card:hover {
+      transform: translateY(-3px);
+      border-color: #b9b3f1;
+      box-shadow: 0 12px 28px rgb(32 36 58 / 7%);
+    }
+
+    .need-icon {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--lavender);
+      font-size: 1.25rem;
+    }
+
+    .need-card:nth-child(2) .need-icon { background: #fff0e7; }
+    .need-card:nth-child(3) .need-icon { background: #e6f7ee; }
+    .need-card:nth-child(4) .need-icon { background: #fff6d9; }
+
+    .need-card strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 1rem;
+    }
+
+    .need-card span:last-child {
+      display: block;
+      color: var(--muted);
+      font-size: .87rem;
+    }
+
+    .directory-section { padding-top: 68px; }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.6fr) repeat(3, minmax(140px, .8fr));
+      gap: 10px;
+      margin: 22px 0;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 7px 22px rgb(32 36 58 / 3%);
+    }
+
+    .filter-control {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .search-wrap { position: relative; }
+
+    .search-wrap span {
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .search-wrap input { padding-left: 42px; }
+
+    .directory-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 15px 2px;
+      color: var(--muted);
+      font-size: .91rem;
+    }
+
+    .text-button {
+      padding: 6px 0;
+      border: 0;
+      color: var(--purple);
+      background: transparent;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .mentor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 17px;
+    }
+
+    .mentor-card {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: white;
+      box-shadow: 0 7px 22px rgb(32 36 58 / 3%);
+      transition: transform .16s ease, box-shadow .16s ease;
+    }
+
+    .mentor-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+    }
+
+    .mentor-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mentor-avatar {
+      display: grid;
+      width: 62px;
+      height: 62px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 20px;
+      background: var(--lavender);
+      font-size: 2rem;
+    }
+
+    .mentor-card:nth-child(3n + 2) .mentor-avatar { background: #fff0e7; }
+    .mentor-card:nth-child(3n) .mentor-avatar { background: #e6f7ee; }
+
+    .favorite-button {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: #71778a;
+      background: white;
+      font-size: 1.15rem;
+      cursor: pointer;
+    }
+
+    .favorite-button[aria-pressed="true"] {
+      border-color: #ffd8d1;
+      color: #d85b4a;
+      background: #fff3f1;
+    }
+
+    .mentor-name {
+      margin: 15px 0 2px;
+      font-size: 1.15rem;
+      letter-spacing: -.025em;
+    }
+
+    .mentor-role {
+      min-height: 44px;
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .mentor-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 12px 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #504c80;
+      background: #f0effb;
+      font-size: .76rem;
+      font-weight: 700;
+    }
+
+    /* Limit the bio to roughly three lines without line-clamp. */
+    .mentor-bio {
+      line-height: 1.55;
+      max-height: calc(1.55em * 3);
+      overflow: hidden;
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .mentor-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: auto;
+    }
+
+    .mentor-actions button {
+      min-height: 42px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      font-size: .87rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .mentor-actions button:hover { border-color: var(--purple); }
+
+    .mentor-actions .request-button {
+      flex: 1;
+      border-color: var(--purple);
+      color: white;
+      background: var(--purple);
+    }
+
+    .mentor-actions .request-button:hover { background: var(--purple-dark); }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      padding: 45px 20px;
+      border: 1px dashed #c9c9d6;
+      border-radius: 18px;
+      color: var(--muted);
+      background: white;
+      text-align: center;
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--ink);
+      font-size: 1.1rem;
+    }
+
+    .how-section { background: #f0effb; }
+
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .how-card {
+      padding: 22px;
+      border: 1px solid #e2e0f2;
+      border-radius: 18px;
+      background: rgb(255 255 255 / 80%);
+    }
+
+    .step-number {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: 50%;
+      color: white;
+      background: var(--purple);
+      font-weight: 800;
+    }
+
+    .how-card h3 { margin: 14px 0 7px; }
+    .how-card p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+    .closing {
+      padding: 66px 20px;
+      color: white;
+      background:
+        radial-gradient(circle at 10% 15%, #ffffff22 0 2px, transparent 3px),
+        radial-gradient(circle at 88% 75%, #ffffff22 0 3px, transparent 4px),
+        linear-gradient(130deg, #282345, #5144a1 64%, #806bd0);
+      text-align: center;
+    }
+
+    .closing-inner { max-width: 720px; margin-inline: auto; }
+    .closing h2 { margin: 7px 0 12px; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.1; }
+    .closing p { color: #e7e4ff; }
+    .closing .primary-button { margin-top: 10px; color: var(--ink); background: #ffd7ad; }
+    .closing .primary-button:hover { background: #ffc991; }
+
+    footer {
+      padding: 22px;
+      color: #d9dced;
+      background: #20243a;
+      text-align: center;
+      font-size: .86rem;
+    }
+
+    .dialog {
+      width: min(600px, calc(100% - 28px));
+      max-height: min(86vh, 800px);
+      padding: 0;
+      overflow: auto;
+      border: 0;
+      border-radius: 22px;
+      color: var(--ink);
+      background: white;
+      box-shadow: 0 24px 80px rgb(20 20 40 / 28%);
+    }
+
+    .dialog::backdrop { background: rgb(21 23 41 / 56%); }
+
+    .dialog-inner { padding: clamp(20px, 5vw, 32px); }
+
+    .dialog-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .dialog-header h2 { margin: 0; font-size: 1.5rem; line-height: 1.2; }
+
+    .close-button {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--ink);
+      background: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .profile-intro {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .profile-intro .mentor-avatar { width: 70px; height: 70px; }
+    .profile-intro h3 { margin: 0 0 3px; }
+    .profile-intro p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .dialog-copy { color: var(--muted); }
+
+    .dialog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .dialog-actions .primary-button { min-width: 175px; }
+
+    .secondary-button {
+      min-height: 43px;
+      padding: 9px 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: white;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .request-form { margin-top: 20px; }
+    .request-form[hidden], .profile-view[hidden], .request-view[hidden],
+    .request-confirmation[hidden] { display: none; }
+
+    .form-field { margin: 15px 0; }
+
+    .form-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .9rem;
+      font-weight: 750;
+    }
+
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 10px 12px;
+      border: 1px solid #d7d9e3;
+      border-radius: 11px;
+      color: var(--ink);
+      background: white;
+    }
+
+    .form-field textarea { min-height: 95px; resize: vertical; }
+
+    .form-note {
+      padding: 11px 13px;
+      border-radius: 12px;
+      color: #585776;
+      background: #f3f1ff;
+      font-size: .84rem;
+    }
+
+    .request-confirmation {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 14px;
+      background: #eff9f3;
+    }
+
+    .request-confirmation strong { display: block; margin-bottom: 4px; }
+    .request-confirmation p { margin: 0; color: var(--muted); }
+
+    .toast {
+      position: fixed;
+      z-index: 10;
+      right: 20px;
+      bottom: 20px;
+      max-width: min(380px, calc(100% - 40px));
+      padding: 12px 16px;
+      border-radius: 13px;
+      color: white;
+      background: #282345;
+      box-shadow: var(--shadow);
+      font-size: .9rem;
+    }
+
+    .toast[hidden] { display: none; }
+
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr .7fr; gap: 20px; }
+      .need-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mentor-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 620px) {
+      .container { width: min(100% - 28px, 1160px); }
+      .nav { min-height: 64px; }
+      .nav-links { gap: 12px; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      .hero { padding: 50px 0 38px; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-art { min-height: 225px; }
+      .orbit { width: 210px; height: 210px; }
+      .art-card { width: min(300px, 90%); }
+      .section { padding: 52px 0; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .need-grid, .mentor-grid, .how-grid { grid-template-columns: 1fr; }
+      .need-card { min-height: auto; }
+      .filters { grid-template-columns: 1fr; }
+      .directory-meta { align-items: flex-start; }
+      .mentor-role, .mentor-bio { min-height: 0; }
+      .trust-inner { padding: 14px 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="top-note">
+    <strong>Find your next step.</strong> Get guidance for school, studies, and career.
+  </div>
+
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top" aria-label="Pathways home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        Pathways
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#needs">Explore needs</a>
+        <a href="#mentors">Find a mentor</a>
+        <a href="#how-it-works">How it works</a>
+        <a class="nav-cta" href="#mentors">Browse mentors</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-inner">
+        <div>
+          <div class="eyebrow">Mentorship for every kind of learner</div>
+          <h1>Big questions deserve a helpful human.</h1>
+          <p class="hero-copy">
+            From school subjects and study habits to choosing a career or
+            changing direction, connect with a mentor who understands what
+            you’re working through.
+          </p>
+          <div class="hero-buttons">
+            <a class="primary-button" href="#mentors">Find your mentor</a>
+            <a class="quiet-link" href="#needs">Explore what you need ↓</a>
+          </div>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit"></div>
+          <span class="floating-star">✳</span>
+          <span class="floating-spark">✦</span>
+          <div class="art-card">
+            <strong>A little guidance can go a long way.</strong>
+            <p>Talk through your goals, find a fresh perspective, and decide on one next step.</p>
+            <div class="art-people">
+              <div class="art-avatars">
+                <span>👩🏽‍💻</span>
+                <span>👨🏻‍🏫</span>
+                <span>👩🏼‍🔬</span>
+              </div>
+              <small>Learn together, at your pace</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="trust-strip">
+      <div class="container trust-inner">
+        <span><strong>Academic support</strong> for different stages</span>
+        <span aria-hidden="true">✦</span>
+        <span><strong>Career exploration</strong> without pressure</span>
+        <span aria-hidden="true">✦</span>
+        <span><strong>Real conversations</strong> and practical next steps</span>
+      </div>
+    </div>
+
+    <section class="section need-section" id="needs">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Start with what’s on your mind</div>
+            <h2>What would you like help with?</h2>
+            <p>Choose a topic to find mentors whose experience matches your needs.</p>
+          </div>
+        </div>
+
+        <div class="need-grid">
+          <button class="need-card" type="button" data-category="Academics">
+            <span class="need-icon" aria-hidden="true">📚</span>
+            <strong>School & academics</strong>
+            <span>Subjects, study habits, exams, and learning confidence.</span>
+          </button>
+          <button class="need-card" type="button" data-category="Higher education">
+            <span class="need-icon" aria-hidden="true">🎓</span>
+            <strong>College & further study</strong>
+            <span>Courses, applications, choosing a major, and study plans.</span>
+          </button>
+          <button class="need-card" type="button" data-category="Career">
+            <span class="need-icon" aria-hidden="true">🧭</span>
+            <strong>Career exploration</strong>
+            <span>Discover fields, ask questions, and learn about real work.</span>
+          </button>
+          <button class="need-card" type="button" data-category="Skills">
+            <span class="need-icon" aria-hidden="true">🛠️</span>
+            <strong>Skills & confidence</strong>
+            <span>Build practical skills, prepare for interviews, or find direction.</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section directory-section" id="mentors">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Meet people who can help</div>
+            <h2>Find a mentor for your next step</h2>
+            <p>
+              These sample profiles demonstrate how a mentor directory works.
+              Use the filters to explore by subject, stage, and meeting style.
+            </p>
+          </div>
+        </div>
+
+        <div class="filters" role="search" aria-label="Filter mentor profiles">
+          <label class="search-wrap">
+            <span aria-hidden="true">⌕</span>
+            <input class="filter-control" id="search-input" type="search"
+              placeholder="Search subjects, skills, or mentor names"
+              aria-label="Search mentors">
+          </label>
+
+          <select class="filter-control" id="category-filter" aria-label="Filter by topic">
+            <option value="">All topics</option>
+            <option value="Academics">School & academics</option>
+            <option value="Higher education">College & further study</option>
+            <option value="Career">Career exploration</option>
+            <option value="Skills">Skills & confidence</option>
+          </select>
+
+          <select class="filter-control" id="stage-filter" aria-label="Filter by learner stage">
+            <option value="">All learner stages</option>
+            <option value="School students">School students</option>
+            <option value="College students">College students</option>
+            <option value="Early career">Early career</option>
+            <option value="Career changers">Career changers</option>
+            <option value="All ages">All ages</option>
+          </select>
+
+          <select class="filter-control" id="format-filter" aria-label="Filter by meeting format">
+            <option value="">All formats</option>
+            <option value="Online">Online</option>
+            <option value="In person">In person</option>
+            <option value="Either">Either</option>
+          </select>
+        </div>
+
+        <div class="directory-meta">
+          <span id="results-count" aria-live="polite">Loading mentors…</span>
+          <button class="text-button" id="clear-filters" type="button">Clear filters</button>
+        </div>
+
+        <div class="mentor-grid" id="mentor-grid"></div>
+      </div>
+    </section>
+
+    <section class="section how-section" id="how-it-works">
+      <div class="container">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">Simple, supportive, student-led</div>
+            <h2>How the mentorship flow works</h2>
+            <p>You decide what you want to discuss. A mentor can help you think it through—not choose your future for you.</p>
+          </div>
+        </div>
+
+        <div class="how-grid">
+          <article class="how-card">
+            <span class="step-number">1</span>
+            <h3>Choose a topic</h3>
+            <p>Start with an academic question, a career idea, or a skill you want to build.</p>
+          </article>
+          <article class="how-card">
+            <span class="step-number">2</span>
+            <h3>Explore mentor profiles</h3>
+            <p>Filter by experience and meeting format, then read about mentors’ backgrounds.</p>
+          </article>
+          <article class="how-card">
+            <span class="step-number">3</span>
+            <h3>Prepare one next step</h3>
+            <p>Share what you hope to discuss and leave with ideas you can explore at your own pace.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="closing-inner">
+        <div class="eyebrow" style="color: #d8ceff;">Your path is yours to create</div>
+        <h2>You don’t have to figure it all out alone.</h2>
+        <p>Start with a question. Find a perspective. Take one small step forward.</p>
+        <a class="primary-button" href="#mentors">Explore mentors</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Pathways Mentorship · Every age. Every ambition. Every possibility.
+  </footer>
+
+  <dialog class="dialog" id="mentor-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-inner">
+      <div class="dialog-header">
+        <h2 id="dialog-title">Mentor profile</h2>
+        <button class="close-button" id="close-dialog" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div class="profile-view" id="profile-view">
+        <div class="profile-intro">
+          <div class="mentor-avatar" id="dialog-avatar" aria-hidden="true"></div>
+          <div>
+            <h3 id="dialog-name"></h3>
+            <p id="dialog-role"></p>
+          </div>
+        </div>
+        <div class="mentor-meta" id="dialog-pills"></div>
+        <p class="dialog-copy" id="dialog-bio"></p>
+        <div class="dialog-actions">
+          <button class="primary-button" id="open-request" type="button">Request a session</button>
+          <button class="secondary-button" id="back-to-directory" type="button">Close profile</button>
+        </div>
+      </div>
+
+      <div class="request-view" id="request-view" hidden>
+        <p class="dialog-copy" id="request-intro"></p>
+        <form class="request-form" id="request-form">
+          <div class="form-field">
+            <label for="request-name">Your first name</label>
+            <input id="request-name" name="name" type="text" maxlength="60" required autocomplete="given-name">
+          </div>
+
+          <div class="form-field">
+            <label for="request-email">Email address</label>
+            <input id="request-email" name="email" type="email" maxlength="120" required autocomplete="email"
+              placeholder="you@example.com">
+          </div>
+
+          <div class="form-field">
+            <label for="request-topic">What would you like to discuss?</label>
+            <select id="request-topic" name="topic" required>
+              <option value="">Choose a topic</option>
+              <option>School subject or study habits</option>
+              <option>College, course, or further study</option>
+              <option>Career exploration</option>
+              <option>Skills, confidence, or interview preparation</option>
+              <option>Something else</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="request-message">A little context for the mentor</label>
+            <textarea id="request-message" name="message" maxlength="500" required
+              placeholder="What would make a conversation helpful for you?"></textarea>
+          </div>
+
+          <p class="form-note">
+            Demo only: this form does not send or store your information.
+            It will show a sample confirmation on this page.
+          </p>
+
+          <div class="dialog-actions">
+            <button class="primary-button" type="submit">Preview request</button>
+            <button class="secondary-button" id="cancel-request" type="button">Back to profile</button>
+          </div>
+        </form>
+
+        <div class="request-confirmation" id="request-confirmation" aria-live="polite" hidden>
+          <strong>Request preview created!</strong>
+          <p id="confirmation-message"></p>
+          <p class="form-note">This is only a demo confirmation. Nothing was sent or saved.</p>
+          <div class="dialog-actions">
+            <button class="primary-button" id="finish-request" type="button">Done</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const mentors = [
+        {
+          id: "maya",
+          name: "Maya Patel",
+          avatar: "👩🏽‍💻",
+          role: "Software engineer · Study and STEM mentor",
+          categories: ["Academics", "Higher education", "Career", "Skills"],
+          stages: ["School students", "College students"],
+          format: "Online",
+          topics: ["Maths", "STEM", "Coding"],
+          bio: "I help learners build confidence in maths and science, try beginner coding projects, and explore different paths into technology.",
+          experience: "6 years mentoring",
+          availability: "Weekday evenings"
+        },
+        {
+          id: "james",
+          name: "James Okafor",
+          avatar: "👨🏿‍🏫",
+          role: "Teacher · Learning and exam preparation",
+          categories: ["Academics", "Skills"],
+          stages: ["School students", "All ages"],
+          format: "Either",
+          topics: ["Study skills", "Exams", "Writing"],
+          bio: "I work with students on practical study routines, exam preparation, writing skills, and finding a learning approach that works for them.",
+          experience: "9 years mentoring",
+          availability: "Weekends"
+        },
+        {
+          id: "lina",
+          name: "Lina Chen",
+          avatar: "👩🏻‍🔬",
+          role: "Research scientist · Science and university mentor",
+          categories: ["Academics", "Higher education", "Career"],
+          stages: ["School students", "College students"],
+          format: "Online",
+          topics: ["Biology", "Research", "University"],
+          bio: "I can help you explore biology, understand research careers, and think through university subjects and science projects.",
+          experience: "5 years mentoring",
+          availability: "Flexible online"
+        },
+        {
+          id: "omar",
+          name: "Omar Williams",
+          avatar: "🧑🏽‍🎨",
+          role: "Product designer · Creative careers mentor",
+          categories: ["Career", "Skills"],
+          stages: ["College students", "Early career", "All ages"],
+          format: "Online",
+          topics: ["Design", "Portfolio", "Creativity"],
+          bio: "I support people who want to explore design, build a portfolio, or learn how creative teams solve everyday problems.",
+          experience: "7 years mentoring",
+          availability: "Weekday afternoons"
+        },
+        {
+          id: "ana",
+          name: "Ana García",
+          avatar: "👩🏽‍⚕️",
+          role: "Healthcare professional · Health careers mentor",
+          categories: ["Academics", "Higher education", "Career"],
+          stages: ["School students", "College students", "Early career"],
+          format: "Either",
+          topics: ["Health", "Biology", "Applications"],
+          bio: "I talk with students curious about health careers, science subjects, training routes, and the realities of working in care.",
+          experience: "4 years mentoring",
+          availability: "Some weekends"
+        },
+        {
+          id: "dev",
+          name: "Dev Singh",
+          avatar: "👨🏻‍💼",
+          role: "Career coach · Confidence and interviews",
+          categories: ["Career", "Skills", "Higher education"],
+          stages: ["College students", "Early career", "Career changers", "All ages"],
+          format: "Online",
+          topics: ["Interviews", "Communication", "Career planning"],
+          bio: "I help people clarify what matters to them, prepare for interviews, and turn a broad career goal into achievable next steps.",
+          experience: "8 years mentoring",
+          availability: "Weekday evenings"
+        },
+        {
+          id: "sara",
+          name: "Sara Thompson",
+          avatar: "👩🏼‍🏫",
+          role: "University adviser · Courses and applications",
+          categories: ["Academics", "Higher education", "Skills"],
+          stages: ["School students", "College students", "All ages"],
+          format: "Online",
+          topics: ["Applications", "Course choices", "Writing"],
+          bio: "I help learners compare study options, plan applications, and explain their interests and experience clearly.",
+          experience: "10 years mentoring",
+          availability: "Weekdays"
+        },
+        {
+          id: "leo",
+          name: "Leo Martins",
+          avatar: "🧑🏽‍🔧",
+          role: "Electrician · Skilled trades and apprenticeships",
+          categories: ["Career", "Skills"],
+          stages: ["School students", "Early career", "Career changers"],
+          format: "In person",
+          topics: ["Apprenticeships", "Trades", "Practical skills"],
+          bio: "I share what a skilled-trades career can involve and help people explore apprenticeships, practical learning, and getting started.",
+          experience: "3 years mentoring",
+          availability: "By arrangement"
+        },
+        {
+          id: "nora",
+          name: "Nora Ahmed",
+          avatar: "👩🏾‍🌱",
+          role: "Environmental researcher · Nature and sustainability",
+          categories: ["Academics", "Higher education", "Career"],
+          stages: ["School students", "College students", "Career changers"],
+          format: "Either",
+          topics: ["Environment", "Science", "Research"],
+          bio: "I mentor people curious about environmental science, sustainability, fieldwork, and ways to connect learning with real-world questions.",
+          experience: "5 years mentoring",
+          availability: "Flexible"
+        }
+      ];
+
+      const grid = document.getElementById("mentor-grid");
+      const searchInput = document.getElementById("search-input");
+      const categoryFilter = document.getElementById("category-filter");
+      const stageFilter = document.getElementById("stage-filter");
+      const formatFilter = document.getElementById("format-filter");
+      const resultsCount = document.getElementById("results-count");
+      const dialog = document.getElementById("mentor-dialog");
+      const toast = document.getElementById("toast");
+
+      let currentMentor = null;
+      let toastTimer = null;
+      const favorites = new Set();
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (character) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[character]));
+      }
+
+      function mentorMatches(mentor) {
+        const query = searchInput.value.trim().toLowerCase();
+        const category = categoryFilter.value;
+        const stage = stageFilter.value;
+        const format = formatFilter.value;
+
+        const searchable = [
+          mentor.name,
+          mentor.role,
+          mentor.bio,
+          mentor.topics.join(" "),
+          mentor.categories.join(" ")
+        ].join(" ").toLowerCase();
+
+        return (!query || searchable.includes(query)) &&
+          (!category || mentor.categories.includes(category)) &&
+          (!stage || mentor.stages.includes(stage)) &&
+          (!format || mentor.format === format || mentor.format === "Either");
+      }
+
+      function renderMentors() {
+        const visibleMentors = mentors.filter(mentorMatches);
+        resultsCount.textContent =
+          visibleMentors.length + (visibleMentors.length === 1 ? " mentor" : " mentors") +
+          " available in this demo";
+
+        if (visibleMentors.length === 0) {
+          grid.innerHTML =
+            '<div class="empty-state"><strong>No mentors match those filters yet.</strong>' +
+            'Try another topic or clear the filters to see all sample profiles.</div>';
+          return;
+        }
+
+        grid.innerHTML = visibleMentors.map((mentor) => `
+          <article class="mentor-card">
+            <div class="mentor-top">
+              <div class="mentor-avatar" aria-hidden="true">${escapeHtml(mentor.avatar)}</div>
+              <button class="favorite-button" type="button"
+                data-favorite="${escapeHtml(mentor.id)}"
+                aria-label="${favorites.has(mentor.id) ? "Remove " + escapeHtml(mentor.name) + " from" : "Add " + escapeHtml(mentor.name) + " to"} favorites"
+                aria-pressed="${favorites.has(mentor.id)}"
+                title="${favorites.has(mentor.id) ? "Remove from favorites" : "Add to favorites"}">
+                ${favorites.has(mentor.id) ? "♥" : "♡"}
+              </button>
+            </div>
+            <h3 class="mentor-name">${escapeHtml(mentor.name)}</h3>
+            <p class="mentor-role">${escapeHtml(mentor.role)}</p>
+            <div class="mentor-meta">
+              ${mentor.topics.slice(0, 3).map((topic) =>
+                `<span class="pill">${escapeHtml(topic)}</span>`).join("")}
+            </div>
+            <p class="mentor-bio">${escapeHtml(mentor.bio)}</p>
+            <div class="mentor-actions">
+              <button type="button" data-profile="${escapeHtml(mentor.id)}">View profile</button>
+              <button class="request-button" type="button" data-request="${escapeHtml(mentor.id)}">Request</button>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.hidden = false;
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+          toast.hidden = true;
+        }, 2600);
+      }
+
+      function findMentor(id) {
+        return mentors.find((mentor) => mentor.id === id) || null;
+      }
+
+      function openMentorDialog(mentor, showRequest) {
+        if (!mentor) return;
+        currentMentor = mentor;
+
+        document.getElementById("dialog-title").textContent = "Mentor profile";
+        document.getElementById("dialog-avatar").textContent = mentor.avatar;
+        document.getElementById("dialog-name").textContent = mentor.name;
+        document.getElementById("dialog-role").textContent = mentor.role;
+        document.getElementById("dialog-bio").textContent = mentor.bio;
+
+        const pills = [
+          ...mentor.topics,
+          mentor.experience,
+          mentor.format + " meetings",
+          ...mentor.stages
+        ];
+
+        document.getElementById("dialog-pills").innerHTML =
+          pills.map((item) => `<span class="pill">${escapeHtml(item)}</span>`).join("");
+
+        document.getElementById("request-intro").textContent =
+          "Introduce yourself to " + mentor.name +
+          " and share what you would like to discuss. This demo will only preview your request.";
+
+        document.getElementById("profile-view").hidden = showRequest;
+        document.getElementById("request-view").hidden = !showRequest;
+        document.getElementById("request-form").hidden = false;
+        document.getElementById("request-confirmation").hidden = true;
+
+        if (!dialog.open) {
+          dialog.showModal();
+          document.body.classList.add("dialog-open");
+        }
+
+        if (showRequest) {
+          document.getElementById("request-name").focus();
+        } else {
+          document.getElementById("close-dialog").focus();
+        }
+      }
+
+      function closeDialog() {
+        if (dialog.open) dialog.close();
+      }
+
+      grid.addEventListener("click", (event) => {
+        const target = event.target.closest("button");
+        if (!target) return;
+
+        if (target.dataset.favorite) {
+          const id = target.dataset.favorite;
+          if (favorites.has(id)) {
+            favorites.delete(id);
+            showToast("Removed from favorites.");
+          } else {
+            favorites.add(id);
+            showToast("Added to favorites for this page session.");
+          }
+          renderMentors();
+          return;
+        }
+
+        if (target.dataset.profile) {
+          openMentorDialog(findMentor(target.dataset.profile), false);
+          return;
+        }
+
+        if (target.dataset.request) {
+          openMentorDialog(findMentor(target.dataset.request), true);
+        }
+      });
+
+      [searchInput, categoryFilter, stageFilter, formatFilter].forEach((control) => {
+        control.addEventListener("input", renderMentors);
+        control.addEventListener("change", renderMentors);
+      });
+
+      document.querySelectorAll(".need-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          categoryFilter.value = card.dataset.category;
+          renderMentors();
+          document.getElementById("mentors").scrollIntoView({ behavior: "smooth" });
+          searchInput.focus({ preventScroll: true });
+        });
+      });
+
+      document.getElementById("clear-filters").addEventListener("click", () => {
+        searchInput.value = "";
+        categoryFilter.value = "";
+        stageFilter.value = "";
+        formatFilter.value = "";
+        renderMentors();
+        searchInput.focus();
+      });
+
+      document.getElementById("close-dialog").addEventListener("click", closeDialog);
+      document.getElementById("back-to-directory").addEventListener("click", closeDialog);
+
+      document.getElementById("open-request").addEventListener("click", () => {
+        if (!currentMentor) return;
+        document.getElementById("profile-view").hidden = true;
+        document.getElementById("request-view").hidden = false;
+        document.getElementById("request-form").hidden = false;
+        document.getElementById("request-confirmation").hidden = true;
+        document.getElementById("request-name").focus();
+      });
+
+      document.getElementById("cancel-request").addEventListener("click", () => {
+        document.getElementById("request-view").hidden = true;
+        document.getElementById("profile-view").hidden = false;
+        document.getElementById("open-request").focus();
+      });
+
+      document.getElementById("request-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!currentMentor) return;
+
+        const name = document.getElementById("request-name").value.trim();
+        document.getElementById("confirmation-message").textContent =
+          "Thanks, " + name + ". Your request preview for " + currentMentor.name +
+          " is ready. In a real service, this would be sent securely to the mentor.";
+
+        document.getElementById("request-form").hidden = true;
+        document.getElementById("request-confirmation").hidden = false;
+        document.getElementById("finish-request").focus();
+      });
+
+      document.getElementById("finish-request").addEventListener("click", closeDialog);
+
+      dialog.addEventListener("close", () => {
+        document.body.classList.remove("dialog-open");
+        document.getElementById("request-form").reset();
+        currentMentor = null;
+      });
+
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) closeDialog();
+      });
+
+      renderMentors();
+    })();
+  </script>
+</body>
+</html>
